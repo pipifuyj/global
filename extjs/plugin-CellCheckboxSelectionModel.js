@@ -91,6 +91,9 @@ Ext.grid.CellCheckboxSelectionModel = Ext.extend(Ext.grid.CellSelectionModel, {
         Ext.grid.CellCheckboxSelectionModel.superclass.initEvents.call(this);
         this.grid.on('render', function(){
             var view = this.grid.getView();
+			view.on("refresh", this.clearCheckboxSelections, this);
+			view.on("beforerowremoved", this.clearCheckboxSelections, this);
+			view.on("beforerowsinserted", this.clearCheckboxSelections, this);
             view.mainBody.on('mousedown', this.onMouseDown, this);
             Ext.fly(view.innerHd).on('mousedown', this.onHdMouseDown, this);
         }, this);
