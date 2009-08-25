@@ -707,5 +707,46 @@ class suid{
 			));
 		return $o['count']==1;
 	}
+
+	public $id=null;
+	public $data=array();
+	public function create($array=array()){
+		$array[$this->keyName[0]]=0;
+		if($this->id=$this->insertById($array))return $this->data=$this->selectById($this->id);
+	}
+	public function write($array=array()){
+		if(!$this->id)return;
+		$this->data=array_merge($this->data,$array);
+		if($this->updateById($this->id,$this->data))return $this->data=$this->selectById($this->id);
+	}
+	public function read($mixed,$value=null){
+		if($value)$mixed=array($mixed=>$value);
+		if(is_array($mixed)){
+			if(is_array($mixed[0])){
+				foreach($mixed as $k=>$v){
+					if($this->read($v))return $this->id;
+				}
+			}else{
+				$filter=array();
+				foreach($mixed as $k=>$v){
+					$filter[]=array($k,"=",$v);
+				}
+				$o=$this->select(array("filter"=>$filter));
+				if($this->data=$o['root'][0])return $this->id=$this->data[$this->keyName[0]];
+				else $this->data=array();
+			}
+		}else{
+			if($this->data=$this->selectById($mixed))return $this->id=$mixed;
+			else $this->data=array();
+		}
+	}
+	public function remove(){
+		if(!$this->id)return;
+		if($this->deleteById($this->id)){
+			$this->id=null;
+			$this->data=array();
+			return true;
+		}
+	}
 }
 ?>
