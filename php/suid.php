@@ -731,7 +731,7 @@ class suid{
 				foreach($mixed as $k=>$v){
 					$filter[]=array($k,"=",$v);
 				}
-				$o=$this->select(array("filter"=>$filter));
+				$o=$this->select(array("filter"=>$filter,"limit"=>1));
 				if($this->data=$o['root'][0])return $this->id=$this->data[$this->keyName[0]];
 				else $this->data=array();
 			}
