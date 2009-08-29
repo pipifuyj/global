@@ -2,6 +2,20 @@ Ext.BLANK_IMAGE_URL="http://global.googlecode.com/svn/trunk/extjs/image/default/
 Ext.IMAGE_URL=function(sGif){
 	return Ext.BLANK_IMAGE_URL.replace("s.gif",sGif);
 };
+Ext.override(Ext.Container,{
+	removeAll: function(autoDestroy){
+		this.initItems();
+		var rem=[],items=[];
+		this.items.each(function(i){
+			rem.push(i);
+		});
+		Ext.each(rem,function(item){
+			this.remove(item,autoDestroy);
+			if(item.ownerCt!==this)items.push(item);
+		},this);
+		return items;
+	}
+});
 Ext.override(Ext.tree.TreeNode,{
 /*	eachDescendant: function(f,scope){
 		var i;

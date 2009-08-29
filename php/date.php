@@ -20,7 +20,7 @@ class date{
 		$this->string=$this->format();
 	}
 	function checkCron($m="*",$h="*",$dom="*",$mon="*",$dow="*"){
-		if(count($temp=preg_split("/\s+/",$m))==5)list($m,$h,$dom,$mon,$dow)=$temp;
+		if(count($temp=preg_split("/\s+/",$m))>=5)list($m,$h,$dom,$mon,$dow)=$temp;
 		return $this->checkCronCheck($this->minutes,$m)
 			&&$this->checkCronCheck($this->hours,$h)
 			&&$this->checkCronCheck($this->mday,$dom)
