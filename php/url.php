@@ -38,9 +38,9 @@ class url{
 		else return self::r2a($r,$b);
 	}
 	function c2a($c,$b=null){
-		$c=preg_replace('/(href|src)=(\')(.*)(\')/i','$1."=\"".$3."\""',$c);
+		$c=preg_replace('/(href|src)=(\')([^\']*)(\')/i','$1."=\"".$3."\""',$c);
 		$callback=create_function('$m','return $m[1]."=\"".url::toA("$m[2]",$b)."\"";');
-		$c=preg_replace_callback('/(href|src)="(.*)"/i',$callback,$c);
+		$c=preg_replace_callback('/(href|src)="([^"]*)"/i',$callback,$c);
 		return $c;
 	}
 }

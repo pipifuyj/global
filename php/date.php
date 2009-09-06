@@ -55,5 +55,10 @@ class date{
 	function format($format="Y-m-d H:i:s"){
 		return date($format,$this->time);
 	}
+	function rfc822($time=null){
+		if($this&&$this instanceof date)$me=&$this;
+		else $me=new date($time);
+		return $me->format("D, d M Y H:i:s T");
+	}
 }
 ?>
