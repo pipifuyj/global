@@ -72,6 +72,10 @@ $H(sduiHtmlSelectTableOptions.fieldMap).each(function(item){
 		if(index<0)return;
 		sduiHtmlSelectTableTrs.each(function(tr){
 				var td=tr.select("td")[index];
-				td.update(map[td.innerHTML]);
+				var a=[];
+				td.innerHTML.split(",").each(function(name){
+					a.push(map[name]);
+				});
+				td.update(a.join(","));
 		});
 });
