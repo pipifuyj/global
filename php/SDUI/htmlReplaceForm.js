@@ -23,7 +23,7 @@ if(!Object.isArray(sduiHtmlReplaceFormValues)){
 				}
 			}else if(Object.isArray(p.value)){
 				if(Object.isArray(p.value[0])&&Object.isArray(p.value[1])){
-					inputSelect(input,p.value[0],p.value[1]);
+					inputSelect(input,p.value[0],p.value[1],p.value[2]);
 				}else{
 					switch(p.value[0]){
 					case 'inputCalendar':
