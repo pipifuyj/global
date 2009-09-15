@@ -159,6 +159,7 @@ abstract class sql{
 		if(!preg_match("/^([a-z]*)\((.*)\)$/",$column['type'],$type))preg_match("/^([a-z]*)$/",$column['type'],$type);
 		switch($type[1]){
 			case "text":
+			case "longtext":
 				$html="<textarea id=\"$id\" name=\"$id\">$value</textarea>";
 				break;
 			case "enum":
@@ -202,6 +203,7 @@ abstract class sql{
 				$html="<input id=\"$id\" name=\"$id\" type=\"text\" maxlength=\"".$type[2]."\" value=\"$value\" />";
 				break;
 			default:
+				$value=str_replace('"','&#34;',$value);
 				$html="<input id=\"$id\" name=\"$id\" type=\"text\" maxlength=\"".$type[2]."\" value=\"$value\" />";
 				break;
 		}
