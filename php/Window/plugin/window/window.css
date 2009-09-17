@@ -128,7 +128,7 @@ form, .windowForm{
 .windowForm fieldset ul li textarea{
 	clear: both;
 	width: 90%;
-	height: 100px;
+	height: 200px;
 }
 .windowForm fieldset ul li span{
 	font-weight: normal;
