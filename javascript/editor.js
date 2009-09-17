@@ -26,6 +26,7 @@ function editor(id,config){
 		_editor.editors[id].Width=_editor.textareas[id].offsetWidth;
 		_editor.editors[id].Height=_editor.textareas[id].offsetHeight+80;
 		if(config)_editor.editors[id].Config['CustomConfigurationsPath']=config;
+		if(_editor.textareas[id].value.toString().match(/<html[^<]*>/i))_editor.editors[id].Config['FullPage']=true;
 		_editor.editors[id].ReplaceTextarea();
 		_editor.frames[id]=document.getElementById(id+"___Frame");
 		_editor.loaded[id]=true;
