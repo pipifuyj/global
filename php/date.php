@@ -47,6 +47,8 @@ class date{
 			}else{
 				$return=false;
 			}
+		}elseif($value==$flag){
+			$return=true;
 		}else{
 			$return=false;
 		}
