@@ -1,5 +1,4 @@
 <?php
-//version: Liu ChuanRen, 12/24/08
 class urlbuffer{
 	var $id="urlbuffer";
 	var $time_buffer;
@@ -24,11 +23,8 @@ class urlbuffer{
 			flush();
 			ob_start(create_function('$s','return "";'));
 			$this->time_last=filemtime($this->file_buffer);
-		}
-		if($this->time_now-$this->time_last<$this->time_buffer){
-			exit(0);
+			if($this->time_now-$this->time_last<$this->time_buffer)exit;
 		}else{
-			touch($this->file_buffer);
 			ob_start();
 		}
 	}
