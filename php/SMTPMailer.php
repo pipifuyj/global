@@ -1,6 +1,10 @@
 <?php
 require_once("smtp.php");
 class SMTPMailer{
+	/**
+	* 0, 1, 2. See the details in smtp.php
+	*/
+	public $SMTPDebug=0;
 	public $Host;
 	public $Port=25;
 	public $UserName;
@@ -38,7 +42,11 @@ class SMTPMailer{
 		$this->header.="\n\n";
 		$this->body=chunk_split(base64_encode($this->Body),76,"\n");
 		$this->smtp=new smtp();
-		$this->smtp->Connect($this->Host,$this->Port);
+		$this->smtp->do_debug=$this->SMTPDebug;
+		if(!$this->smtp->Connect($this->Host,$this->Port)){
+			$this->Error="SMTP Connect False.";
+			return false;
+		}
 		$this->smtp->Hello($this->HostName);
 		if($this->smtp->Authenticate($this->UserName,$this->Password)){
 			if($this->smtp->Mail($this->From)){

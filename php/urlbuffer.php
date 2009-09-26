@@ -18,9 +18,14 @@ class urlbuffer{
 			@mkdir($this->path_buffer);
 		$this->query_string=$_SERVER['QUERY_STRING'];
 		$this->file_buffer=$this->path_buffer."/~".urlencode($this->query_string);
-		if(file_exists($this->file_buffer))$this->time_last=filemtime($this->file_buffer);
+		if(file_exists($this->file_buffer)){
+			echo file_get_contents($this->file_buffer);
+			ob_end_flush();
+			flush();
+			ob_start(create_function('$s','return "";'));
+			$this->time_last=filemtime($this->file_buffer);
+		}
 		if($this->time_now-$this->time_last<$this->time_buffer){
-			print(file_get_contents($this->file_buffer));
 			exit(0);
 		}else{
 			touch($this->file_buffer);
