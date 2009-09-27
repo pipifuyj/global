@@ -27,6 +27,7 @@ class urlbuffer{
 		}else{
 			ob_start();
 		}
+		touch($this->file_buffer);
 	}
 	function save(){
 		if($this->time_buffer>0){
