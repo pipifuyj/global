@@ -5,7 +5,7 @@ class verify extends session{
 	var $_codeSet=array(0,1,2,3,4,5,6,7,8,9);
 	var $_length=4;
 	function verify($name=null){
-		$name||($name="globalphpverify");
+		$name="globalphpverify_$name";
 		parent::__construct($name);
 		$this->code=$this->_value["code"];
 		$this->generateCode();
