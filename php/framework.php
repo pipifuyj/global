@@ -1,11 +1,12 @@
 <?php
 /**
 framework
-	action
-		default
-			model.php
-			view.php
-			controller.php
+	model
+		default.php
+	view
+		default.php
+	controller
+		default.php
 			
 	plugin
 		test
@@ -74,11 +75,11 @@ class framework{
 		if($framework_flag)$framework_flag=$this->BAEvent("Initialize","after");
 		//Route
 		$framework_flag=$this->BAEvent("Route","before");
-		$framework_path="{$this->path}/action/{$this->action}/model.php";
+		$framework_path="{$this->path}/model/{$this->action}.php";
 		if(is_file($framework_path)){
 			require($framework_path);
 		}
-		$framework_path="{$this->path}/action/{$this->action}/controller.php";
+		$framework_path="{$this->path}/controller/{$this->action}.php";
 		if(is_file($framework_path)){
 			require($framework_path);
 		}
@@ -86,11 +87,11 @@ class framework{
 		if($framework_flag)$framework_flag=$this->BAEvent("Route","after");
 		//Render
 		$framework_flag=$this->BAEvent("Render","before");
-		$framework_path="{$this->path}/action/{$this->action}/view.php";
+		$framework_path="{$this->path}/view/{$this->action}.php";
 		if(is_file($framework_path)){
 			require($framework_path);
 		}else{
-			$framework_path="{$this->path}/action/default/view.php";
+			$framework_path="{$this->path}/view/default.php";
 			if(is_file($framework_path)){
 				require($framework_path);
 			}
