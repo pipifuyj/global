@@ -60,7 +60,7 @@ class sdui extends suid{
 		$html.="</tbody>";
 		$html.="<tfoot><tr><td colspan=".count($options['field'])."></td></tr></tfoot>";
 		$html.="</table>";
-		$options['count']=$this->count(array("filter"=>$options['filter']));
+		$options['count']=$this->count(array("field"=>array($this->keyName[0]),"filter"=>$options['filter']));
 		$options['count']=$options['count']['result'];
 		$html.="<script>var sdui=".@json_encode($this)."</script>";
 		$html.="<script>var sduiHtmlSelectTableOptions=".json_encode($options).";</script>";
