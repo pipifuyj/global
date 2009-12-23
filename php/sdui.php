@@ -88,12 +88,10 @@ class sdui extends suid{
 		reset($this->replaceColumns);
 		while(list($k,$v)=each($this->replaceColumns)){
 			$name=$v['name'];
-			$span=$v['comment']?$v['comment']:$name;
-			$html.="<li";
-			if(in_array($v,$this->hiddenColumns))$html.=" style='display:none;'";
-			$html.="><label>$span</label>";
-			$html.=sql::htmlColumnToInput($v,"sduiHtmlReplaceForm[{$name}]",$row[$name]);
-			$html.="</li>";
+            $label=$v['comment']?$v['comment']:$name;
+            $id="sduiHtmlReplaceForm[$name]";
+            $value=$row[$name];
+            $html.=$this->htmlColumnToLi($v,$label,$id,$value,$row);
 		}
 		$html.="</ul></fieldset>";
 		$html.="<input type=reset value=Reset />";
@@ -105,6 +103,17 @@ class sdui extends suid{
 		$html.="<script src=/global/php/SDUI/htmlReplaceForm.js></script>";
 		return $html;
 	}
+    public function htmlColumnToInput($column,$id,$value,$row=null){
+        return sql::htmlColumnToInput($column,$id,$value);
+    }
+    public function htmlColumnToLi($column,$label,$id,$value,$row=null){
+        $html="<li";
+        if(in_array($column,$this->hiddenColumns))$html.=" style='display:none;'";
+        $html.="><label>$label</label>";
+        $html.=$this->htmlColumnToInput($column,$id,$value,$row);
+        $html.="</li>";
+        return $html;
+    }
 	public function handleRequest(){
 		switch($this->action=$_GET[$this->actionName]){
 		case "Update":
