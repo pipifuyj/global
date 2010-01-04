@@ -94,8 +94,7 @@ class sdui extends suid{
             $html.=$this->htmlColumnToLi($v,$label,$id,$value,$row);
 		}
 		$html.="</ul></fieldset>";
-		$html.="<input type=reset value=Reset />";
-		$html.="<input type=submit name=sduiHtmlReplaceFormSubmit value=Submit />";
+		$html.=$this->htmlReplaceFormButtons();
 		$html.="</form>";
 		$html.="<script>var sdui=".@json_encode($this)."</script>";
 		$html.="<script>var sduiHtmlReplaceFormValues=".json_encode($values).";</script>";
@@ -112,6 +111,11 @@ class sdui extends suid{
         $html.="><label>$label</label>";
         $html.=$this->htmlColumnToInput($column,$id,$value,$row);
         $html.="</li>";
+        return $html;
+    }
+    public function htmlReplaceFormButtons(){
+        $html="<input type=reset value=Reset />";
+        $html.="<input type=submit name=sduiHtmlReplaceFormSubmit value=Submit />";
         return $html;
     }
 	public function handleRequest(){
