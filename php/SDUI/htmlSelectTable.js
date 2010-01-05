@@ -75,7 +75,7 @@ sduiHtmlSelectTableToolbar.Field=sduiHtmlSelectTableToolbar.select("select")[0];
 sduiHtmlSelectTableToolbar.Keyword=sduiHtmlSelectTableToolbar.select("input")[0];
 sduiHtmlSelectTableToolbar.Go=sduiHtmlSelectTableToolbar.select("a")[0];
 Event.observe(sduiHtmlSelectTableToolbar.Go,"click",function(event){
-	location.href=sdui.toUrl({"filter[0]":sduiHtmlSelectTableToolbar.Field.value,"filter[1]":"like","filter[2]":"%%"+sduiHtmlSelectTableToolbar.Keyword.value+"%%"});
+	location.href=sdui.toUrl({"filter[0]":sduiHtmlSelectTableToolbar.Field.value,"filter[1]":"like","filter[2]":"%%"+sduiHtmlSelectTableToolbar.Keyword.value+"%%",start:0});
 	Event.stop(event);
 });
 if(sduiHtmlSelectTableOptions.filter){
