@@ -52,7 +52,7 @@ class sdui extends suid{
 			$id=$v[$this->keyName[0]];
 			$html.="<tr sduiId=$id>";
 			while(list($kk,$vv)=each($v)){
-				$vv=($vv=="")?"&nbsp;":$vv;
+				$vv=$vv?htmlspecialchars($vv):"&nbsp;";
 				$html.="<td>$vv</td>";
 			}
 			$html.="</tr>\n";
