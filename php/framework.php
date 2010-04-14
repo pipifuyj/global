@@ -3,6 +3,8 @@
 framework
 	model
 		default.php
+		store.php
+		record.php
 	view
 		default.php
 	controller
@@ -53,6 +55,15 @@ class framework{
 			//avoid ., .., .svn, ....
 			if(substr($v,0,1)!=".")$this->plugins["$path/$v"]=scandir("$path/$v");
 		}
+	}
+	public function getModel($name){
+		$args=func_get_args();
+		$name=array_shift($args);
+		$name.="Model";
+		require_once("{$this->path}/model/$name.php");
+		$model=@new $name();
+		call_user_func_array(array($model,$name),$args);
+		return $model;
 	}
 	public function toUrl($value=array()){
 		$value=array_merge($this->baseParams,$value);
