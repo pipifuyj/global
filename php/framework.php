@@ -3,8 +3,12 @@
 framework
 	model
 		default.php
-		store.php
-		record.php
+		Model.php
+		ModelStore.php
+		ModelRecord.php
+		ObjectModel.php
+		ObjectModelStore.php
+		ObjectModelRecord.php
 	view
 		default.php
 	controller
@@ -56,13 +60,13 @@ class framework{
 			if(substr($v,0,1)!=".")$this->plugins["$path/$v"]=scandir("$path/$v");
 		}
 	}
-	public function getModel($name){
-		$args=func_get_args();
-		$name=array_shift($args);
-		$name.="Model";
+	public function getModel($id){
+		require_once("Framework/model/Model.php");
+		$name="{$id}Model";
 		require_once("{$this->path}/model/$name.php");
 		$model=@new $name();
-		call_user_func_array(array($model,$name),$args);
+		$model->framework=&$this;
+		$model->id=$id;
 		return $model;
 	}
 	public function toUrl($value=array()){
