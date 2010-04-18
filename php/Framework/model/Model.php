@@ -1,5 +1,7 @@
 <?php
 class Model{
+	public $_record="ModelRecord";
+	public $_store="ModelStore";
 	public $framework=null;
 	public $id="";
 	public $fields=array();
@@ -7,8 +9,8 @@ class Model{
 		return in_array($key,$this->keys);
 	}
 	public function record($data=array(),$id=null){
-		require_once("ModelRecord.php");
-		$name="{$this->id}ModelRecord";
+		require_once("{$this->_record}.php");
+		$name="{$this->id}{$this->_record}";
 		require_once("{$this->framework->path}/model/$name.php");
 		$record=new $name();
 		$record->model=&$this;
@@ -16,8 +18,8 @@ class Model{
 		return $record;
 	}
 	public function store(){
-		require_once("ModelStore.php");
-		$name="{$this->id}ModelStore";
+		require_once("{$this->_store}.php");
+		$name="{$this->id}{$this->_store}";
 		require_once("{$this->framework->path}/model/$name.php");
 		$store=new $name();
 		$store->model=&$this;
