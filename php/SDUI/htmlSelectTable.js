@@ -75,12 +75,12 @@ sduiHtmlSelectTableToolbar.Field=sduiHtmlSelectTableToolbar.select("select")[0];
 sduiHtmlSelectTableToolbar.Keyword=sduiHtmlSelectTableToolbar.select("input")[0];
 sduiHtmlSelectTableToolbar.Go=sduiHtmlSelectTableToolbar.select("a")[0];
 Event.observe(sduiHtmlSelectTableToolbar.Go,"click",function(event){
-	location.href=sdui.toUrl({"filter[0]":sduiHtmlSelectTableToolbar.Field.value,"filter[1]":"like","filter[2]":"%%"+sduiHtmlSelectTableToolbar.Keyword.value+"%%",start:0});
+		location.href=sdui.toUrl({"filter[0][0]":sduiHtmlSelectTableToolbar.Field.value,"filter[0][1]":"like","filter[0][2]":"%%"+sduiHtmlSelectTableToolbar.Keyword.value+"%%",start:0});
 	Event.stop(event);
 });
 if(sduiHtmlSelectTableOptions.filter){
-	sduiHtmlSelectTableToolbar.Field.value=sduiHtmlSelectTableOptions.filter[0];
-	sduiHtmlSelectTableToolbar.Keyword.value=sduiHtmlSelectTableOptions.filter[2].replace(/%/g,"");
+	sduiHtmlSelectTableToolbar.Field.value=sduiHtmlSelectTableOptions.filter[0][0];
+	sduiHtmlSelectTableToolbar.Keyword.value=sduiHtmlSelectTableOptions.filter[0][2].replace(/%/g,"");
 }
 //fieldMap
 $H(sduiHtmlSelectTableOptions.fieldMap).each(function(item){

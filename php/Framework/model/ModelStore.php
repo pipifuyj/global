@@ -1,6 +1,7 @@
 <?php
 class ModelStore{
 	public $model=null;
+	public $id="id";
 	public function construct(){
 	}
 	public function add($record){
@@ -13,6 +14,9 @@ class ModelStore{
 	public function find($key,$value){
 		$records=$this->query($key,$value,0,1);
 		return $records[0];
+	}
+	public function getById($id){
+		return $this->find($this->id,$id);
 	}
 }
 ?>

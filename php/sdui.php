@@ -142,7 +142,8 @@ class sdui extends suid{
 					}
 				}
 				$id=$this->insertById($_POST['sduiHtmlReplaceForm']);
-				$html=window::alert("Succeeded to Insert ID={$id}",$this->toUrl(array(),"Select"));
+				if($id)$html=window::alert("Succeeded to Insert ID={$id}",$this->toUrl(array(),"Select"));
+				else $html=window::alert("Failed to Insert").$this->htmlReplaceForm($id,$_POST['sduiHtmlReplaceForm']);
 			}else{
 				$html=$this->htmlReplaceForm();
 			}
