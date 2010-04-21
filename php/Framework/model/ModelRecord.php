@@ -13,5 +13,8 @@ class ModelRecord{
 	public function set($key,$value){
 		$this->data[$key]=$value;
 	}
+	public function commit(){
+		return $this->model->store()->commit($this);
+	}
 }
 ?>

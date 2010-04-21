@@ -1,7 +1,10 @@
 <?php
 class View{
+	public $framework=null;
 	public function index($request=null,$session=null){
-		echo "Hello World!";
+	}
+	public function __call($method,$args){
+		$this->index();
 	}
 }
 ?>

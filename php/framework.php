@@ -37,6 +37,7 @@ class framework{
 	
 	public $value=array();
 	public $action="default";
+	public $method="Index";
 	
 	public $stdout=array();
 	public $stderr=array();
@@ -86,6 +87,7 @@ class framework{
 			$this->action=$framework_t[1];
 		}
 		$this->value=$_REQUEST;
+		if($this->value[$this->action])$this->method=$this->value[$this->action];
 		if($framework_flag)$framework_flag=$this->BAEvent("Initialize");
 		if($framework_flag)$framework_flag=$this->BAEvent("Initialize","after");
 		//Route
@@ -94,23 +96,41 @@ class framework{
 		if(is_file($framework_path)){
 			require($framework_path);
 		}
+		require_once("Framework/controller/Controller.php");
 		$framework_path="{$this->path}/controller/{$this->action}.php";
 		if(is_file($framework_path)){
-			require($framework_path);
+			require_once($framework_path);
 		}
+		$framework_t="{$this->action}Controller";
+		if(class_exists($framework_t)&&is_subclass_of($framework_t,"Controller")){
+			$this->controller=new $framework_t();
+		}else{
+			$this->controller=new Controller();
+		}
+		$this->controller->framework=&$this;
+		$this->controller->{$this->method}();
 		if($framework_flag)$framework_flag=$this->BAEvent("Route");
 		if($framework_flag)$framework_flag=$this->BAEvent("Route","after");
 		//Render
 		$framework_flag=$this->BAEvent("Render","before");
+		require_once("Framework/view/View.php");
 		$framework_path="{$this->path}/view/{$this->action}.php";
 		if(is_file($framework_path)){
-			require($framework_path);
+			require_once($framework_path);
 		}else{
 			$framework_path="{$this->path}/view/default.php";
 			if(is_file($framework_path)){
 				require($framework_path);
 			}
 		}
+		$framework_t="{$this->action}View";
+		if(class_exists($framework_t)&&is_subclass_of($framework_t,"View")){
+			$this->view=new $framework_t();
+		}else{
+			$this->view=new View();
+		}
+		$this->view->framework=&$this;
+		$this->view->{$this->method}();
 		if($framework_flag)$framework_flag=$this->BAEvent("Render");
 		if($framework_flag)$framework_flag=$this->BAEvent("Render","after");
 		//Output

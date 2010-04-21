@@ -7,9 +7,18 @@ class ModelStore{
 	public function add($record){
 		return true;
 	}
-	public function query($key,$value,$start=0,$limit=0){
+	public function commit($record){
+		return true;
+	}
+	public function remove($record){
+		return true;
+	}
+	public function filter($filters,$start=0,$limit=0){
 		$records=array();
 		return $records;
+	}
+	public function query($key,$value,$start=0,$limit=0){
+		return $this->filter(array(array($key,$value)),$start,$limit);
 	}
 	public function find($key,$value){
 		$records=$this->query($key,$value,0,1);
