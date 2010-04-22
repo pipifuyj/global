@@ -13,6 +13,10 @@ class Model{
 				$field=new $name($field);
 			}
 		}
+		require_once("{$this->_record}.php");
+		if(@include_once("{$this->framework->path}/model/{$this->id}{$this->_record}.php")){
+			$this->_record="{$this->id}{$this->_record}";
+		}
 	}
 	public function hasField($name){
 		foreach($this->fields as $field){
@@ -21,9 +25,7 @@ class Model{
 		return false;
 	}
 	public function record($data=array(),$id=null){
-		require_once("{$this->_record}.php");
-		$name="{$this->id}{$this->_record}";
-		require_once("{$this->framework->path}/model/$name.php");
+		$name=$this->_record;
 		$record=new $name();
 		$record->model=&$this;
 		$record->construct($data,$id);
