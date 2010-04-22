@@ -3,36 +3,43 @@ require_once("ModelStore.php");
 class ModelSQLStore extends ModelStore{
 	public $sql;
 	public $table;
-	public $fields;
+	public $fields=array();
 	public function construct(){
 		if(!$this->sql)$this->sql=$this->model->framework->sql;
 		if(!$this->table)$this->table=strtolower($this->model->id);
-		if(!$this->fields)$this->fields=$this->model->fields;
+		foreach($this->fields as $index=>$mapping){
+			$this->model->fields[$index]->mapping=$mapping;
+		}
+		$mappings=array();
 		$formats=array();
 		$sets=array();
 		$fields=array();
-		foreach($this->model->fields as $index=>$key){
+		foreach($this->model->fields as $field){
+			$mappings[]=$field->mapping;
 			$formats[]="'%s'";
-			$sets[]="`{$this->fields[$index]}`='%s'";
-			$fields[]="`{$this->fields[$index]}` as `{$key}`";
+			$sets[]="`{$field->mapping}`='%s'";
+			$fields[]="`{$field->mapping}` as `{$field->name}`";
 		}
-		$this->_insert="insert into `{$this->table}` (`".implode("`,`",$this->fields)."`)values(".implode(",",$formats).")";
+		$this->_insert="insert into `{$this->table}` (`".implode("`,`",$mappings)."`)values(".implode(",",$formats).")";
 		$this->_update="update `{$this->table}` set ".implode(",",$sets)." where `{$this->id}`='%s' limit 1";
 		$this->_select="select `{$this->id}`,".implode(",",$fields)." from `{$this->table}` where";
 		parent::construct();
 	}
-	public function add($record){
+	public function add(&$record){
 		$values=array();
-		foreach($this->model->fields as $index=>$key){
-			$values[]=$record->get($key);
+		foreach($this->model->fields as $field){
+			$values[]=$record->get($field->name);
 		}
 		$this->sql->query($this->_insert,$values);
-		return $this->sql->affectedRows()==1;
+		if($this->sql->affectedRows()==1){
+			$record->id=$this->sql->insertId();
+			return true;
+		}else return false;
 	}
 	public function commit($record){
 		$values=array();
-		foreach($this->model->fields as $key){
-			$values[]=$record->get($key);
+		foreach($this->model->fields as $field){
+			$values[]=$record->get($field->name);
 		}
 		$this->sql->query($this->_update,$values,$record->id);
 		return $this->sql->affectedRows()==1;

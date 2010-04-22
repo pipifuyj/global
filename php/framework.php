@@ -62,12 +62,14 @@ class framework{
 		}
 	}
 	public function getModel($id){
+		require_once("Framework/model/ModelField.php");
 		require_once("Framework/model/Model.php");
 		$name="{$id}Model";
 		require_once("{$this->path}/model/$name.php");
 		$model=@new $name();
 		$model->framework=&$this;
 		$model->id=$id;
+		$model->construct();
 		return $model;
 	}
 	public function toUrl($value=array()){

@@ -5,8 +5,20 @@ class Model{
 	public $framework=null;
 	public $id="";
 	public $fields=array();
-	public function hasKey($key){
-		return in_array($key,$this->keys);
+	function construct(){
+		foreach($this->fields as &$field){
+			if(is_string($field))$field=new ModelField($field);
+			elseif(is_array($field)){
+				$name="Model{$field['type']}Field";
+				$field=new $name($field);
+			}
+		}
+	}
+	public function hasField($name){
+		foreach($this->fields as $field){
+			if($field->name==$name)return true;
+		}
+		return false;
 	}
 	public function record($data=array(),$id=null){
 		require_once("{$this->_record}.php");

@@ -4,7 +4,8 @@ class ModelStore{
 	public $id="id";
 	public function construct(){
 	}
-	public function add($record){
+	public function add(&$record){
+		$record->id=md5(uniqid(rand(),true));
 		return true;
 	}
 	public function commit($record){
