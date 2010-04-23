@@ -6,23 +6,29 @@ class Model{
 	public $id="";
 	public $fields=array();
 	function construct(){
+		$this->Fields=array();
 		foreach($this->fields as &$field){
 			if(is_string($field))$field=new ModelField($field);
 			elseif(is_array($field)){
 				$name="Model{$field['type']}Field";
 				$field=new $name($field);
 			}
+			$this->Fields[$field->name]=$field;
 		}
 		require_once("{$this->_record}.php");
 		if(@include_once("{$this->framework->path}/model/{$this->id}{$this->_record}.php")){
 			$this->_record="{$this->id}{$this->_record}";
 		}
+		require_once("{$this->_store}.php");
+		if(@include_once("{$this->framework->path}/model/{$this->id}{$this->_store}.php")){
+			$this->_store="{$this->id}{$this->_store}";
+		}
 	}
 	public function hasField($name){
-		foreach($this->fields as $field){
-			if($field->name==$name)return true;
-		}
-		return false;
+		return isset($this->Fields[$name]);
+	}
+	public function field($name){
+		return $this->Fields[$name];
 	}
 	public function record($data=array(),$id=null){
 		$name=$this->_record;
@@ -32,9 +38,7 @@ class Model{
 		return $record;
 	}
 	public function store(){
-		require_once("{$this->_store}.php");
-		$name="{$this->id}{$this->_store}";
-		require_once("{$this->framework->path}/model/$name.php");
+		$name=$this->_store;
 		$store=new $name();
 		$store->model=&$this;
 		$store->construct();

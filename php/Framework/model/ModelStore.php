@@ -14,7 +14,7 @@ class ModelStore{
 	public function remove($record){
 		return true;
 	}
-	public function filter($filters,$start=0,$limit=0){
+	public function filter($filters=array(),$start=0,$limit=0){
 		$records=array();
 		return $records;
 	}
@@ -27,6 +27,15 @@ class ModelStore{
 	}
 	public function getById($id){
 		return $this->find($this->id,$id);
+	}
+	public function collect($key,$filters=array()){
+		$records=$this->filter($filters);
+		$collect=array();
+		foreach($records as $record)$collect[]=$record->get($key);
+		return $collect;
+	}
+	public function getTotalCount($filters=array()){
+		return count($this->filter($filters));
 	}
 }
 ?>

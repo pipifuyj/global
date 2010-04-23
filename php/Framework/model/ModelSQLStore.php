@@ -22,7 +22,7 @@ class ModelSQLStore extends ModelStore{
 		}
 		$this->_insert="insert into `{$this->table}` (`".implode("`,`",$mappings)."`)values(".implode(",",$formats).")";
 		$this->_update="update `{$this->table}` set ".implode(",",$sets)." where `{$this->id}`='%s' limit 1";
-		$this->_select="select `{$this->id}`,".implode(",",$fields)." from `{$this->table}` where";
+		$this->_select="select `{$this->id}`,".implode(",",$fields)." from `{$this->table}`";
 		parent::construct();
 	}
 	public function add(&$record){
@@ -48,13 +48,26 @@ class ModelSQLStore extends ModelStore{
 		$this->sql->query("delete from `{$this->table}` where `{$this->id}`='%s' limit 1",$record->id);
 		return $this->sql->affectedRows()==1;
 	}
-	public function filter($filters,$start=0,$limit=0){
+	public function filter($filters=array(),$start=0,$limit=0){
 		foreach($filters as &$filter){
 			$filter="`{$filter[0]}` like '{$filter[1]}'";
 		}
 		return $this->where(implode(" and ",$filters),"",$start,$limit);
 	}
-	public function where($where,$order="",$start=0,$limit=0){
+	public function getTotalCount($filters){
+		foreach($filters as &$filter){
+			$filter="`{$filter[0]}` like '{$filter[1]}'";
+		}
+		$where=implode(" and ",$filters);
+		if($where)$where="where $where";
+		$this->sql->query("select count(`{$this->id}`) as `TotalCount` from `{$this->table}` $where");
+		$row=$this->sql->getRow();
+		$TotalCount=$row['TotalCount'];
+		return $TotalCount;
+	}
+	public function where($where="",$order="",$start=0,$limit=0){
+		if($where)$where="where $where";
+		else $where="";
 		if($order)$order="order by $order";
 		else $order="";
 		if($limit)$limit="limit $start, $limit";
