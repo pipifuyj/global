@@ -4,6 +4,7 @@ class Model{
 	public $_store="ModelStore";
 	public $framework=null;
 	public $id="";
+	public $path="";
 	public $fields=array();
 	function construct(){
 		$this->Fields=array();
@@ -16,11 +17,15 @@ class Model{
 			$this->Fields[$field->name]=$field;
 		}
 		require_once("{$this->_record}.php");
-		if(@include_once("{$this->framework->path}/model/{$this->id}{$this->_record}.php")){
+		$path="{$this->path}/{$this->id}{$this->_record}.php";
+		if(is_file($path)){
+			require_once($path);
 			$this->_record="{$this->id}{$this->_record}";
 		}
 		require_once("{$this->_store}.php");
-		if(@include_once("{$this->framework->path}/model/{$this->id}{$this->_store}.php")){
+		$path="{$this->path}/{$this->id}{$this->_store}.php";
+		if(is_file($path)){
+			require_once($path);
 			$this->_store="{$this->id}{$this->_store}";
 		}
 	}

@@ -28,6 +28,7 @@ class framework{
 	
 	public $actions=array();
 	public $plugins=array();
+	public $models=array();
 	
 	public $base="";
 	public $askmark="?";
@@ -61,14 +62,23 @@ class framework{
 			if(substr($v,0,1)!=".")$this->plugins["$path/$v"]=scandir("$path/$v");
 		}
 	}
+	public function setModels($path){
+		$path=realpath($path);
+		$this->models[$path]=true;
+	}
 	public function getModel($id){
 		require_once("Framework/model/ModelField.php");
 		require_once("Framework/model/Model.php");
 		$name="{$id}Model";
-		require_once("{$this->path}/model/$name.php");
-		$model=@new $name();
+		if(!class_exists($name))foreach($this->models as $path=>$model){
+			$file="$path/$name.php";
+			if(is_file($file))require_once($file);
+			if(class_exists($name))break;
+		}
+		$model=new $name();
 		$model->framework=&$this;
 		$model->id=$id;
+		$model->path=$path;
 		$model->construct();
 		return $model;
 	}
@@ -85,6 +95,7 @@ class framework{
 	public function main(){
 		//Initialize
 		$framework_flag=$this->BAEvent("Initialize","before");
+		$this->setModels("{$this->path}/model");
 		if(preg_match("/^([A-Za-z0-9]+)/",$_SERVER['QUERY_STRING'],$framework_t)){
 			$this->action=$framework_t[1];
 		}
