@@ -54,8 +54,8 @@ class ModelRecord implements Iterator,ArrayAccess{
 		return $this->model->store()->commit($this);
 	}
 	public function save(){
-		if($this->id)$this->commit();
-		else $this->add();
+		if($this->id)return $this->commit();
+		else return $this->add();
 	}
 	public function remove(){
 		return $this->model->store()->remove($this);
