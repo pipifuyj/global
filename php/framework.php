@@ -118,6 +118,11 @@ class framework{
 		$framework_path="{$this->path}/controller/{$this->action}{$this->method}.php";
 		if(is_file($framework_path)){
 			require_once($framework_path);
+		}else{
+			$framework_path="{$this->path}/controller/{$this->action}Index.php";
+			if(is_file($framework_path)){
+				require_once($framework_path);
+			}
 		}
 		$framework_t="{$this->action}Controller";
 		if(class_exists($framework_t)&&is_subclass_of($framework_t,"Controller")){
@@ -144,6 +149,11 @@ class framework{
 		$framework_path="{$this->path}/view/{$this->action}{$this->method}.php";
 		if(is_file($framework_path)){
 			require_once($framework_path);
+		}else{
+			$framework_path="{$this->path}/view/{$this->action}Index.php";
+			if(is_file($framework_path)){
+				require_once($framework_path);
+			}
 		}
 		$framework_t="{$this->action}View";
 		if(class_exists($framework_t)&&is_subclass_of($framework_t,"View")){
