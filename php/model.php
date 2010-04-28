@@ -1,5 +1,4 @@
 <?php
-//version: php@liuchuanren.com.cn, 07/04/08
 /*
 ZF's MVC solution: every controller is a predefined class by ZF. 
 But I prefer to use original php scripts as controllers. In every script, $this is the model's instance who is calling the script as controller. When the script is normally ended, $this->__destruct will run.
@@ -67,10 +66,6 @@ class framework{
 		$this->fireEvent("Route");
 		$this->fireEvent("Render");
 		$this->fireEvent("Output");
-	}
-	public function getInstance($id){
-		global $_FRAMEWORK;
-		return &$_FRAMEWORK[$id];
 	}
 	//Events, maybe plugins with modification for event should be implemented. 
 	public function Initialize(){
