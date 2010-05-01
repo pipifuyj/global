@@ -54,6 +54,21 @@ class ModelSQLStore extends ModelStore{
 		}
 		return $this->where(implode(" and ",$filters),"",$start,$limit);
 	}
+	public function collect($key,$filters=array()){
+		$key=$this->model->field($key);
+		foreach($filters as &$filter){
+			$filter[0]=$this->model->field($filter[0])->mapping;
+			$filter="`{$filter[0]}` like '{$filter[1]}'";
+		}
+		$where=implode(" and ",$filters);
+		if($where)$where="where $where";
+		$this->sql->query("select distinct(`{$key->mapping}`) as `{$key->name}` from `{$this->table}` $where");
+		$collect=array();
+		while($row=$this->sql->getRow()){
+			$collect[]=$row[$key->name];
+		}
+		return $collect;
+	}
 	public function getTotalCount($filters){
 		foreach($filters as &$filter){
 			$filter="`{$filter[0]}` like '{$filter[1]}'";

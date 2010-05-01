@@ -32,6 +32,7 @@ class ModelStore{
 		$records=$this->filter($filters);
 		$collect=array();
 		foreach($records as $record)$collect[]=$record->get($key);
+		$collect=array_unique($collect);
 		return $collect;
 	}
 	public function getTotalCount($filters=array()){
