@@ -4,6 +4,7 @@ class ModelSQLStore extends ModelStore{
 	public $sql;
 	public $table;
 	public $fields=array();
+	public $where="true";
 	public function construct(){
 		if(!$this->sql)$this->sql=$this->model->framework->sql;
 		if(!$this->table)$this->table=strtolower($this->model->id);
@@ -20,9 +21,13 @@ class ModelSQLStore extends ModelStore{
 			$sets[]="`{$field->mapping}`='%s'";
 			$fields[]="`{$field->mapping}` as `{$field->name}`";
 		}
+		$fields[]="`{$this->id}`";
 		$this->_insert="insert into `{$this->table}` (`".implode("`,`",$mappings)."`)values(".implode(",",$formats).")";
 		$this->_update="update `{$this->table}` set ".implode(",",$sets)." where `{$this->id}`='%s' limit 1";
-		$this->_select="select `{$this->id}`,".implode(",",$fields)." from `{$this->table}`";
+		$this->_select_fields=implode(",",$fields);
+		$this->_select_from="`{$this->table}`";
+		$this->_select_where=$this->where;
+		$this->_select="select %s from {$this->_select_from} where {$this->_select_where}";
 		parent::construct();
 	}
 	public function add(&$record){
@@ -49,45 +54,41 @@ class ModelSQLStore extends ModelStore{
 		return $this->sql->affectedRows()==1;
 	}
 	public function filter($filters=array(),$start=0,$limit=0){
-		foreach($filters as &$filter){
-			$filter="`{$filter[0]}` like '{$filter[1]}'";
-		}
-		return $this->where(implode(" and ",$filters),"",$start,$limit);
+		return $this->where($this->parseFilters($filters),"",$start,$limit);
 	}
 	public function collect($key,$filters=array()){
 		$key=$this->model->field($key);
-		foreach($filters as &$filter){
-			$filter[0]=$this->model->field($filter[0])->mapping;
-			$filter="`{$filter[0]}` like '{$filter[1]}'";
-		}
-		$where=implode(" and ",$filters);
-		if($where)$where="where $where";
-		$this->sql->query("select distinct(`{$key->mapping}`) as `{$key->name}` from `{$this->table}` $where");
+		$where=$this->parseFilters($filters);
+		$this->sql->query("$this->_select and $where","distinct(`{$key->mapping}`) as `{$key->name}`");
 		$collect=array();
 		while($row=$this->sql->getRow()){
 			$collect[]=$row[$key->name];
 		}
 		return $collect;
 	}
-	public function getTotalCount($filters){
-		foreach($filters as &$filter){
-			$filter="`{$filter[0]}` like '{$filter[1]}'";
-		}
-		$where=implode(" and ",$filters);
-		if($where)$where="where $where";
-		$this->sql->query("select count(`{$this->id}`) as `TotalCount` from `{$this->table}` $where");
+	public function getTotalCount($filters=array()){
+		$where=$this->parseFilters($filters);
+		$this->sql->query("$this->_select and $where","count(`{$this->id}`) as `TotalCount`");
 		$row=$this->sql->getRow();
 		$TotalCount=$row['TotalCount'];
 		return $TotalCount;
 	}
+	public function parseFilters($filters=array()){
+		foreach($filters as &$filter){
+			$filter[0]=$this->model->field($filter[0])->mapping;
+			$filter="`{$filter[0]}` like '{$filter[1]}'";
+		}
+		$where=implode(" and ",$filters);
+		if(!$where)$where="true";
+		return $where;
+	}
 	public function where($where="",$order="",$start=0,$limit=0){
-		if($where)$where="where $where";
-		else $where="";
+		if(!$where)$where="true";
 		if($order)$order="order by $order";
 		else $order="";
 		if($limit)$limit="limit $start, $limit";
 		else $limit="";
-		$this->sql->query("$this->_select $where $order $limit");
+		$this->sql->query("$this->_select and $where $order $limit",$this->_select_fields);
 		//echo $this->sql->lastClause;
 		$records=array();
 		while($row=$this->sql->getRow()){
