@@ -186,5 +186,8 @@ class framework{
 		}
 		return $framework_flag;
 	}
+	public function __get($name){
+		if(isset($this->controller->$name))return $this->controller->$name;
+	}
 }
 ?>
