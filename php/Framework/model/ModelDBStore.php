@@ -116,24 +116,24 @@ class ModelDBStore extends ModelSQLStore{
 	}
 	public function _has($records){
 		$Records=array();
-		$flag=array();
 		$Flag=array();
+		$index=0;
+		$indices=array();
 		foreach($records as $record){
-			if($flag[$record->id]){
-				foreach($this->has as $index=>$model){
-					$id=$record->data["_id_$index"];
-					if(!$Flag[$model->id][$id]){
-						$Flag[$model->id][$id]=true;
-						$record[$model->id][]=$model->record($reocrd,$id);
-					}
-				}
-			}else{
-				$flag[$record->id]=true;
+			if(!isset($indices[$record->id])){
+				$indices[$record->id]=$index++;
 				foreach($this->has as $model){
 					$record[$model->id]=array();
 					$Flag[$model->id]=array();
 				}
-				$Records[]=$record;
+				$Records[$indices[$record->id]]=$record;
+			}
+			foreach($this->has as $index=>$model){
+				$id=$record->data["_id_$index"];
+				if(!$Flag[$model->id][$id]){
+					$Flag[$model->id][$id]=true;
+					$Records[$indices[$record->id]][$model->id][]=$model->record($reocrd,$id);
+				}
 			}
 		}
 		return $Records;
