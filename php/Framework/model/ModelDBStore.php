@@ -7,8 +7,10 @@ class ModelDBStore extends ModelSQLStore{
 	public $autoAdd=true;
 	public $autoCommit=true;
 	public $autoRemove=false;
+	public $has=array();
 	public function construct(){
 		if(!$this->ids)$this->ids=array($this->id);
+		$this->id="_id_0";
 		if(!$this->sql)$this->sql=$this->model->framework->sql;
 		if(!$this->tables){
 			if(!$this->table)$this->table=strtolower($this->model->id);
@@ -25,6 +27,8 @@ class ModelDBStore extends ModelSQLStore{
 				$table[2]="inner";
 			}elseif($count==2){
 				$table[2]="inner";
+			}elseif($count==4){
+				if($table['has'])$this->has[$i]=$this->model->framework->getModel($table['has']);
 			}
 			$this->_join[]="{$table[2]} join `{$table[0]}` on {$table[1]}";
 			unset($table);
@@ -104,6 +108,35 @@ class ModelDBStore extends ModelSQLStore{
 	public function mapping($key){
 		$mapping=$this->model->field($key)->mapping;
 		return "`{$mapping[0]}`.`{$mapping[1]}`";
+	}
+	public function filter($filters=array(),$start=0,$limit=0){
+		$records=parent::filter($filters,$start,$limit);
+		if($this->has)$records=$this->_has($records);
+		return $records;
+	}
+	public function _has($records){
+		$Records=array();
+		$flag=array();
+		$Flag=array();
+		foreach($records as $record){
+			if($flag[$record->id]){
+				foreach($this->has as $index=>$model){
+					$id=$record->data["_id_$index"];
+					if(!$Flag[$model->id][$id]){
+						$Flag[$model->id][$id]=true;
+						$record[$model->id][]=$model->record($reocrd,$id);
+					}
+				}
+			}else{
+				$flag[$record->id]=true;
+				foreach($this->has as $model){
+					$record[$model->id]=array();
+					$Flag[$model->id]=array();
+				}
+				$Records[]=$record;
+			}
+		}
+		return $Records;
 	}
 }
 ?>
