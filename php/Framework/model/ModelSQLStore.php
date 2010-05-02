@@ -57,12 +57,13 @@ class ModelSQLStore extends ModelStore{
 		return $this->where($this->parseFilters($filters),"",$start,$limit);
 	}
 	public function collect($key,$filters=array()){
-		$key=$this->model->field($key);
+		$mapping=$this->mapping($key);
+		$field=$this->model->field($key);
 		$where=$this->parseFilters($filters);
-		$this->sql->query("$this->_select and $where","distinct(`{$key->mapping}`) as `{$key->name}`");
+		$this->sql->query("$this->_select and $where","distinct($mapping) as `{$field->name}`");
 		$collect=array();
 		while($row=$this->sql->getRow()){
-			$collect[]=$row[$key->name];
+			$collect[]=$row[$field->name];
 		}
 		return $collect;
 	}
@@ -73,10 +74,14 @@ class ModelSQLStore extends ModelStore{
 		$TotalCount=$row['TotalCount'];
 		return $TotalCount;
 	}
+	public function mapping($key){
+		$mapping=$this->model->field($key)->mapping;
+		return "`$mapping`";
+	}
 	public function parseFilters($filters=array()){
 		foreach($filters as &$filter){
-			$filter[0]=$this->model->field($filter[0])->mapping;
-			$filter="`{$filter[0]}` like '{$filter[1]}'";
+			$mapping=$this->mapping($filter[0]);
+			$filter="$mapping like '{$filter[1]}'";
 		}
 		$where=implode(" and ",$filters);
 		if(!$where)$where="true";

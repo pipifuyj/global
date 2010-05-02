@@ -93,24 +93,9 @@ class ModelDBStore extends ModelSQLStore{
 		}
 		return true;
 	}
-	public function collect($key,$filters=array()){
-		$key=$this->model->field($key);
-		$where=$this->parseFilters($filters);
-		$this->sql->query("$this->_select and $where","distinct(`{$key->mapping[0]}`.`{$key->mapping[0]}`) as `{$key->name}`");
-		$collect=array();
-		while($row=$this->sql->getRow()){
-			$collect[]=$row[$key->name];
-		}
-		return $collect;
-	}
-	public function parseFilters($filters=array()){
-		foreach($filters as &$filter){
-			$filter[0]=$this->model->field($filter[0])->mapping;
-			$filter="`{$filter[0][0]}`.`{$filter[0][1]}` like '{$filter[1]}'";
-		}
-		$where=implode(" and ",$filters);
-		if(!$where)$where="true";
-		return $where;
+	public function mapping($key){
+		$mapping=$this->model->field($key)->mapping;
+		return "`{$mapping[0]}`.`{$mapping[1]}`";
 	}
 }
 ?>
