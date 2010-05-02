@@ -122,16 +122,17 @@ class ModelDBStore extends ModelSQLStore{
 		foreach($records as $record){
 			if(!isset($indices[$record->id])){
 				$indices[$record->id]=$index++;
+				$Flag[$record->id]=array();
 				foreach($this->has as $model){
 					$record[$model->id]=array();
-					$Flag[$model->id]=array();
+					$Flag[$record->id][$model->id]=array();
 				}
 				$Records[$indices[$record->id]]=$record;
 			}
 			foreach($this->has as $index=>$model){
 				$id=$record->data["_id_$index"];
-				if(!$Flag[$model->id][$id]){
-					$Flag[$model->id][$id]=true;
+				if(!$Flag[$record->id][$model->id][$id]){
+					$Flag[$record->id][$model->id][$id]=true;
 					/**
 					 * ArrayAccess does NOT work.
 					 */
