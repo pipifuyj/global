@@ -16,9 +16,9 @@ class ModelDBStore extends ModelSQLStore{
 		}
 		$this->tables[0]=array($this->tables[0]);
 		$this->_join=array();
-		for($i=1,$ii=count($this->$tables);$i<$ii;$i++){
+		for($i=1,$ii=count($this->tables);$i<$ii;$i++){
 			$table=&$this->tables[$i];
-			if(is_array($table))$table=array($table);
+			if(!is_array($table))$table=array($table);
 			$count=count($table);
 			if($count==1){
 				$table[1]="`{$table[0]}`.`{$this->ids[$i]}`=`{$this->tables[0][0]}`.`{$this->ids[0]}`";
@@ -27,6 +27,7 @@ class ModelDBStore extends ModelSQLStore{
 				$table[2]="inner";
 			}
 			$this->_join[]="{$table[2]} join `{$table[0]}` on {$table[1]}";
+			unset($table);
 		}
 		$this->_join=implode(" ",$this->_join);
 		if(!$this->Fields){
