@@ -1,6 +1,6 @@
 <?php
 require_once("ModelSQLStore.php");
-class ModelRelationStore extends ModelSQLStore{
+class ModelDBStore extends ModelSQLStore{
 	public $ids;
 	public $tables;
 	public $Fields;
@@ -21,7 +21,7 @@ class ModelRelationStore extends ModelSQLStore{
 		}
 		if(!$this->relation){
 			$this->relation=array();
-			foreach($this->tables as $index=>$table){
+			foreach($this->ids as $index=>$id){
 				$this->relation[]="`{$this->tables[$index]}`.`{$this->ids[$index]}`";
 			}
 			$this->relation=implode("=",$this->relation);
@@ -41,7 +41,8 @@ class ModelRelationStore extends ModelSQLStore{
 			$sets[$field->mapping[0]][]="`{$field->mapping[1]}`='%s'";
 			$fields[]="`{$field->mapping[0]}`.`{$field->mapping[1]}` as `{$field->name}`";
 		}
-		foreach($this->tables as $index=>$table){
+		foreach($this->Fields as $index=>$fields){
+			$table=$this->tables[$index];
 			$this->_insert[$table]="insert into `$table` (`".implode("`,`",$mappings[$table])."`)values(".implode(",",$formats[$table]).")";
 			$this->_update[$table]="update `$table` set ".implode(",",$sets[$table])." where `{$this->ids[$index]}`='%s' limit 1";
 			$fields[]="`$table`.`{$this->ids[$index]}` as `_id_$index`";
@@ -57,7 +58,8 @@ class ModelRelationStore extends ModelSQLStore{
 		foreach($this->model->fields as $field){
 			$values[$field->mapping[0]][]=$record->get($field->name);
 		}
-		foreach($this->tables as $index=>$table){
+		foreach($this->Fields as $index=>$fields){
+			$table=$this->tables[$index];
 			$this->sql->query($this->_insert[$table],$values[$table]);
 			if($this->sql->affectedRows()==1){
 				$record->data["_id_$index"]=$this->sql->insertId();
@@ -73,14 +75,16 @@ class ModelRelationStore extends ModelSQLStore{
 		foreach($this->model->fields as $field){
 			$values[$field->mapping[0]][]=$record->get($field->name);
 		}
-		foreach($this->tables as $index=>$table){
+		foreach($this->Fields as $index=>$fields){
+			$table=$this->tables[$index];
 			$this->sql->query($this->_update[$table],$values[$table],$record->data["_id_$index"]);
 			if($this->sql->affectedRows()<0)return false;
 		}
 		return true;
 	}
 	public function remove($record){
-		if($this->removeRelation)foreach($this->tables as $index=>$table){
+		if($this->removeRelation)foreach($this->Fields as $index=>$fields){
+			$table=$this->tables[$index];
 			$this->sql->query("delete from `$table` where `{$this->ids[$index]}`='%s' limit 1",$record->data["_id_$index"]);
 			if($this->sql->affectedRows()<0)return false;
 		}else{
