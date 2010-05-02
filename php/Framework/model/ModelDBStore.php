@@ -48,7 +48,7 @@ class ModelDBStore extends ModelSQLStore{
 			$fields[]="`$table`.`{$this->ids[$index]}` as `_id_$index`";
 		}
 		$this->_select_fields=implode(",",$fields);
-		$this->_select_from="`".implode("`.`",$this->tables)."`";
+		$this->_select_from="`".implode("`,`",$this->tables)."`";
 		$this->_select_where="{$this->where} and {$this->relation}";
 		$this->_select="select %s from {$this->_select_from} where {$this->_select_where}";
 		ModelStore::construct();
