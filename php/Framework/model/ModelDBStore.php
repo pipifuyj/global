@@ -132,7 +132,11 @@ class ModelDBStore extends ModelSQLStore{
 				$id=$record->data["_id_$index"];
 				if(!$Flag[$model->id][$id]){
 					$Flag[$model->id][$id]=true;
-					$Records[$indices[$record->id]][$model->id][]=$model->record($reocrd,$id);
+					/**
+					 * ArrayAccess does NOT work.
+					 */
+					//$Records[$indices[$record->id]][$model->id][]=$model->record($reocrd,$id);
+					$Records[$indices[$record->id]]->data[$model->id][]=$model->record($record,$id);
 				}
 			}
 		}
