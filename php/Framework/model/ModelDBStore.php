@@ -41,7 +41,7 @@ class ModelDBStore extends ModelSQLStore{
 			$sets[$field->mapping[0]][]="`{$field->mapping[1]}`='%s'";
 			$fields[]="`{$field->mapping[0]}`.`{$field->mapping[1]}` as `{$field->name}`";
 		}
-		foreach($this->Fields as $index=>$fields){
+		foreach($this->ids as $index=>$id){
 			$table=$this->tables[$index];
 			$this->_insert[$table]="insert into `$table` (`".implode("`,`",$mappings[$table])."`)values(".implode(",",$formats[$table]).")";
 			$this->_update[$table]="update `$table` set ".implode(",",$sets[$table])." where `{$this->ids[$index]}`='%s' limit 1";
