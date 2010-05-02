@@ -81,7 +81,15 @@ class ModelSQLStore extends ModelStore{
 	public function parseFilters($filters=array()){
 		foreach($filters as &$filter){
 			$mapping=$this->mapping($filter[0]);
-			$filter="$mapping like '{$filter[1]}'";
+			$count=count($filter);
+			if($count==2){
+				$f="like";
+				$value=$filter[1];
+			}else{
+				$f=$filter[1];
+				$value=$filter[2];
+			}
+			$filter="$mapping $f '$value'";
 		}
 		$where=implode(" and ",$filters);
 		if(!$where)$where="true";
