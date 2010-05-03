@@ -6,6 +6,14 @@ class Model{
 	public $id="";
 	public $path="";
 	public $fields=array();
+	/**
+	 * @todo
+	 */
+	public $has=array();
+	/**
+	 * @todo
+	 */
+	public $with=array();
 	function construct(){
 		$this->Fields=array();
 		foreach($this->fields as &$field){
@@ -14,7 +22,13 @@ class Model{
 				$name="Model{$field['type']}Field";
 				$field=new $name($field);
 			}
-			$this->Fields[$field->name]=$field;
+			if($field->has){
+				$this->has[]=$field;
+				unset($field);
+			}elseif($field->with){
+				$this->with[]=$field;
+				unset($field);
+			}else $this->Fields[$field->name]=$field;
 		}
 		require_once("{$this->_record}.php");
 		$path="{$this->path}/{$this->id}{$this->_record}.php";

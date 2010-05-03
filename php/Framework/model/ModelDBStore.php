@@ -7,6 +7,10 @@ class ModelDBStore extends ModelSQLStore{
 	public $autoAdd=true;
 	public $autoCommit=true;
 	public $autoRemove=false;
+	/**
+	 * @todo remove it
+	 * @deprecated implemented by Model
+	 */
 	public $has=array();
 	public function construct(){
 		if(!$this->ids)$this->ids=array($this->id);
