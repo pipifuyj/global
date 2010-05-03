@@ -82,9 +82,9 @@ class ModelSQLStore extends ModelStore{
 		return $this->logic(ModelStore::logic($this->filters,$filters));
 	}
 	public function logic($filters){
-		if($filters['and'])$flag="and";
-		elseif($filters['or'])$flag="or";
-		if($flag)return "(".$this->logic($filters[0]).") $flag (".$this->logic[$flag].")";
+		if(isset($filters['and']))$flag="and";
+		elseif(isset($filters['or']))$flag="or";
+		if($flag)return "(".$this->logic($filters[0]).") $flag (".$this->logic($filters[$flag]).")";
 		foreach($filters as &$filter){
 			$mapping=$this->mapping($filter[0]);
 			$count=count($filter);
