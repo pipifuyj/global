@@ -20,7 +20,8 @@ class ModelStore{
 		return $records;
 	}
 	public function filterBy($filters,$c="and"){
-		$this->filters=$this->logic($this->filters,$filters,$c);
+		//logic method can be overrided by subclass safely
+		$this->filters=self::logic($this->filters,$filters,$c);
 	}
 	public function logic($filters1,$filters2,$c="and"){
 		return array($filters1,$c=>$filters2);
