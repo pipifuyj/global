@@ -3,6 +3,7 @@ class ModelStore{
 	public $model=null;
 	public $id="id";
 	public $filters=array();
+	public $sorts=array();
 	public function construct(){
 	}
 	public function add(&$record){
@@ -25,6 +26,9 @@ class ModelStore{
 	}
 	public function logic($filters1,$filters2,$c="and"){
 		return array($filters1,$c=>$filters2);
+	}
+	public function sortBy($key,$dir="ASC"){
+		$this->sorts[]=array($key,$dir);
 	}
 	public function query($key,$value,$start=0,$limit=0){
 		return $this->filter(array(array($key,$value)),$start,$limit);

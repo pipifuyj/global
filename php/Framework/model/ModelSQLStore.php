@@ -54,7 +54,7 @@ class ModelSQLStore extends ModelStore{
 		return $this->sql->affectedRows()==1;
 	}
 	public function filter($filters=array(),$start=0,$limit=0){
-		return $this->where($this->parseFilters($filters),"",$start,$limit);
+		return $this->where($this->parseFilters($filters),$this->parseSorts(),$start,$limit);
 	}
 	public function collect($key,$filters=array()){
 		$mapping=$this->mapping($key);
@@ -100,6 +100,15 @@ class ModelSQLStore extends ModelStore{
 		$where=implode(" and ",$filters);
 		if(!$where)$where="true";
 		return $where;
+	}
+	public function parseSorts(){
+		$order=array();
+		foreach($this->sorts as $sort){
+			$sort[0]=$this->mapping($sort[0]);
+			$order[]=implode(" ",$sort);
+		}
+		$order=implode(",",$order);
+		return $order;
 	}
 	public function where($where="",$order="",$start=0,$limit=0){
 		if(!$where)$where="true";
