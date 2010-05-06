@@ -133,8 +133,8 @@ class ModelDBStore extends ModelSQLStore{
 				}
 				$Records[$indices[$record->id]]=$record;
 			}
-			foreach($this->has as $index=>$model){
-				$id=$record->data["_id_$index"];
+			foreach($this->has as $i=>$model){
+				$id=$record->data["_id_$i"];
 				if(!$Flag[$record->id][$model->id][$id]){
 					$Flag[$record->id][$model->id][$id]=true;
 					/**
