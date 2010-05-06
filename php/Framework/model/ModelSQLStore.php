@@ -91,6 +91,9 @@ class ModelSQLStore extends ModelStore{
 			if($count==2){
 				$f="like";
 				$value=$filter[1];
+			}elseif($filter[1]=="in"){
+				$f="in";
+				$value="('".implode("','",$filter[2])."')";
 			}else{
 				$f=$filter[1];
 				$value=$filter[2];
