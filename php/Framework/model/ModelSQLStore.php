@@ -86,6 +86,10 @@ class ModelSQLStore extends ModelStore{
 		elseif(isset($filters['or']))$flag="or";
 		if($flag)return "(".$this->logic($filters[0]).") $flag (".$this->logic($filters[$flag]).")";
 		foreach($filters as &$filter){
+			if(isset($filter['and'])||isset($filter['or'])){
+				$filter=$this->logic($filter);
+				continue;
+			}
 			$mapping=$this->mapping($filter[0]);
 			$count=count($filter);
 			if($count==2){

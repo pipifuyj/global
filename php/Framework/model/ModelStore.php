@@ -2,6 +2,13 @@
 class ModelStore{
 	public $model=null;
 	public $id="id";
+	/**
+	 * filters supporting logic, the structure can be:
+	 * [filters,and=>filters]
+	 * [filters,or=>filters]
+	 * [filter,filter,filters(with and/or)]
+	 * @var array
+	 */
 	public $filters=array();
 	public $sorts=array();
 	public function construct(){
