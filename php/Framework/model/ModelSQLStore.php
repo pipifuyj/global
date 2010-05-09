@@ -69,7 +69,7 @@ class ModelSQLStore extends ModelStore{
 	}
 	public function getTotalCount($filters=array()){
 		$where=$this->parseFilters($filters);
-		$this->sql->query("$this->_select and $where","count(`{$this->id}`) as `TotalCount`");
+		$this->sql->query("$this->_select and $where","count(`{$this->table}`.`{$this->id}`) as `TotalCount`");
 		$row=$this->sql->getRow();
 		$TotalCount=$row['TotalCount'];
 		return $TotalCount;

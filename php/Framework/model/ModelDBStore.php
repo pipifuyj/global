@@ -14,12 +14,13 @@ class ModelDBStore extends ModelSQLStore{
 	public $has=array();
 	public function construct(){
 		if(!$this->ids)$this->ids=array($this->id);
-		$this->id="_id_0";
+		$this->id=$this->ids[0];
 		if(!$this->sql)$this->sql=$this->model->framework->sql;
 		if(!$this->tables){
 			if(!$this->table)$this->table=strtolower($this->model->id);
 			$this->tables=array($this->table);
 		}
+		$this->table=$this->tables[0];
 		$this->tables[0]=array($this->tables[0]);
 		$this->_join=array();
 		for($i=1,$ii=count($this->tables);$i<$ii;$i++){
@@ -57,6 +58,7 @@ class ModelDBStore extends ModelSQLStore{
 			$sets[$field->mapping[0]][]="`{$field->mapping[1]}`='%s'";
 			$fields[]="`{$field->mapping[0]}`.`{$field->mapping[1]}` as `{$field->name}`";
 		}
+		$fields[]="`{$this->tables[0][0]}`.`{$this->ids[0]}`";
 		foreach($this->ids as $index=>$id){
 			$table=$this->tables[$index][0];
 			$this->_insert[$table]="insert into `$table` (`".implode("`,`",$mappings[$table])."`)values(".implode(",",$formats[$table]).")";
