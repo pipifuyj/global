@@ -56,20 +56,20 @@ class ModelSQLStore extends ModelStore{
 	public function filter($filters=array(),$start=0,$limit=0){
 		return $this->where($this->parseFilters($filters),$this->parseSorts(),$start,$limit);
 	}
-	public function collect($key,$filters=array()){
+	public function collect($key,$filters=array(),$start=0,$limit=0){
 		$mapping=$this->mapping($key);
-		$field=$this->model->field($key);
 		$where=$this->parseFilters($filters);
-		$this->sql->query("$this->_select and $where","distinct($mapping) as `{$field->name}`");
+		if($limit)$limit="limit $start, $limit";else $limit="";
+		$this->sql->query("$this->_select and $where $limit","distinct($mapping) as `$key`");
 		$collect=array();
 		while($row=$this->sql->getRow()){
-			$collect[]=$row[$field->name];
+			$collect[]=$row[$key];
 		}
 		return $collect;
 	}
 	public function getTotalCount($filters=array()){
 		$where=$this->parseFilters($filters);
-		$this->sql->query("$this->_select and $where","count(`{$this->table}`.`{$this->id}`) as `TotalCount`");
+		$this->sql->query("$this->_select and $where","count(distinct(`{$this->table}`.`{$this->id}`)) as `TotalCount`");
 		$row=$this->sql->getRow();
 		$TotalCount=$row['TotalCount'];
 		return $TotalCount;

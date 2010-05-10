@@ -116,6 +116,11 @@ class ModelDBStore extends ModelSQLStore{
 		return "`{$mapping[0]}`.`{$mapping[1]}`";
 	}
 	public function filter($filters=array(),$start=0,$limit=0){
+		if($this->has&&$limit){
+			$ids=$this->collect($this->id,$filters,$start,$limit);
+			$filters=ModelStore::logic($filters,array(array($this->id,"in",$ids)));
+			$limit=0;
+		}
 		$records=parent::filter($filters,$start,$limit);
 		if($this->has)$records=$this->_has($records);
 		return $records;
