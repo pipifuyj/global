@@ -59,8 +59,9 @@ class ModelSQLStore extends ModelStore{
 	public function collect($key,$filters=array(),$start=0,$limit=0){
 		$mapping=$this->mapping($key);
 		$where=$this->parseFilters($filters);
+		if($sort=$this->parseSorts())$sort="order by $sort";
 		if($limit)$limit="limit $start, $limit";else $limit="";
-		$this->sql->query("$this->_select and $where $limit","distinct($mapping) as `$key`");
+		$this->sql->query("$this->_select and $where $sort $limit","distinct($mapping) as `$key`");
 		$collect=array();
 		while($row=$this->sql->getRow()){
 			$collect[]=$row[$key];
