@@ -1,5 +1,4 @@
 <?php
-//version: Liu ChuanRen, 11/10/07
 class myftp{
 	var $query_string="";
 	var $request;
@@ -20,6 +19,26 @@ class myftp{
 	function message($msg){
 		echo "\r\n<p align=center>$msg<p>\r\n";
 	}
+	function mode($mode){
+		$ts=array(
+			0140000=>'ssocket',
+			0120000=>'llink',
+			0100000=>'-file',
+			0060000=>'bblock',
+			0040000=>'ddir',
+			0020000=>'cchar',
+			0010000=>'pfifo'
+		);
+		$t=$mode&0170000;
+		$m=isset($ts[$t])?$ts[$t]{0}:'u';
+		$m.=(($mode&0x0100)?'r':'-').(($mode&0x0080)?'w':'-');
+		$m.=(($mode&0x0040)?(($mode&0x0800)?'s':'x'):(($mode&0x0800)?'S':'-'));
+		$m.=(($mode&0x0020)?'r':'-').(($mode&0x0010)?'w':'-');
+		$m.=(($mode&0x0008)?(($mode&0x0400)?'s':'x'):(($mode&0x0400)?'S':'-'));
+		$m.=(($mode&0x0004)?'r':'-').(($mode&0x0002)?'w':'-');
+		$m.=(($mode&0x0001)?(($mode&0x0200)?'t':'x'):(($mode&0x0200)?'T':'-'));
+		return $m;
+	}
 	function showDir($dirname){
 		$result="";
 		$dir=dir($dirname);
@@ -36,16 +55,18 @@ class myftp{
 				<input type=submit name=submit value='Upload New File' />
 			</form>
 		</td></tr>
-		<tr align=center><td>type</td><td>size(B)</td><td>time</td><td>name</td></tr>
+		<tr align=center><td>mode</td><td>size(B)</td><td>time</td><td>name</td></tr>
 		</thead><tbody>\r\n";
 		$count=0;
 		while($name=$dir->read()){
-			$count++;
 			$f=$dirname."/".$name;
 			$type=is_dir($f)?"Dir":"File";
+			$stat=stat($f);
+			$mode=$this->mode($stat['mode']);
 			$size=filesize($f);
 			$time=date("Y-m-d H:i:s",filemtime($f));
-			$result.="<tr ondblclick=\"unlink(this)\"><td>$type</td><td>$size</td><td>$time</td><td><a href=\"?myftp_next=$name".$this->url($type)."\">$name</a></td></tr>\r\n";
+			$result.="<tr ondblclick=\"unlink($count)\"><td>$mode</td><td>$size</td><td>$time</td><td><a href=\"?myftp_next=$name".$this->url($type)."\">$name</a></td></tr>\r\n";
+			$count++;
 		}
 		$dir->close();
 		$result.="</tbody>";
@@ -59,14 +80,14 @@ class myftp{
 			</tfoot>";
 		}
 		$result.="</table><script>
-		function unlink(tr){
-			var tds=tr.getElementsByTagName('td');
-			var a=tr.getElementsByTagName('a')[0];
-			if(tds[0].innerHTML=='File'){
-				if(confirm('Really Unlink The File?')){
-					location=a.getAttribute('href')+'&myftp_action=unlink';
-				}
-			}
+		var myftp={};
+		myftp.table=document.getElementById('myftp');
+		myftp.tbody=myftp.table.getElementsByTagName('tbody')[0];
+		myftp.trs=myftp.tbody.getElementsByTagName('tr');
+		function unlink(index){
+			var td=myftp.trs[index].getElementsByTagName('td')[0];
+			var a=myftp.trs[index].getElementsByTagName('a')[0];
+			if(td.innerHTML.charAt(0)=='-'&&confirm('Really Unlink The File?'))location=a.getAttribute('href')+'&myftp_action=unlink';
 		}
 		</script>";
 		return $result;
@@ -96,7 +117,7 @@ class myftp{
 		$this->request=$request;
 		$this->request['myftp_current'].="/".$this->request['myftp_next'];
 		$this->current=realpath($this->root."/".$this->request['myftp_current']);
-		$this->request['myftp_current']=substr($this->current,strlen($this->root)+1);
+		$this->request['myftp_current']=ltrim(substr($this->current,strlen($this->root)),"/");
 		if($this->check()){
 			switch($this->request['myftp_action']){
 				case 'mkdir':
