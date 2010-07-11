@@ -186,6 +186,12 @@ class framework{
 		}
 		return $framework_flag;
 	}
+	public function fireEvent($framework_eventName){
+		$framework_flag=$this->BAEvent($framework_eventName,"before");
+		if($framework_flag)$framework_flag=$this->BAEvent($framework_eventName);
+		if($framework_flag)$framework_flag=$this->BAEvent($framework_eventName,"after");
+		return $framework_flag;
+	}
 	public function __get($name){
 		if(property_exists($this->controller,$name))return $this->controller->$name;
 	}

@@ -92,13 +92,16 @@ Ext.grid.CellCheckboxSelectionModel = Ext.extend(Ext.grid.CellSelectionModel, {
         this.grid.on('render', function(){
             var view = this.grid.getView();
 			view.on("refresh", this.clearCheckboxSelections, this);
+			view.on("rowupdated", this.onRowUpdated, this);
 			view.on("beforerowremoved", this.clearCheckboxSelections, this);
 			view.on("beforerowsinserted", this.clearCheckboxSelections, this);
             view.mainBody.on('mousedown', this.onMouseDown, this);
             Ext.fly(view.innerHd).on('mousedown', this.onHdMouseDown, this);
         }, this);
     },
-
+	onRowUpdated: function(view,index,record){
+		if(this.isSelected(record))view.onRowSelect(index);
+	},
     // private
     onMouseDown: function(e, t){
         if(e.button === 0 && t.className == 'x-grid3-row-checker'){ // Only fire if left-click

@@ -50,3 +50,10 @@ Ext.override(Ext.tree.TreeNode,{
 		});
 	}
 });
+Ext.override(Ext.data.Record,{
+	hasChanges: function(){
+		var m=this.modified;
+		for(var n in m)if(m.hasOwnProperty(n))return true;
+		return false;
+	}
+});
