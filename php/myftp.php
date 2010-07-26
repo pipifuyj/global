@@ -8,11 +8,19 @@ class myftp{
 			'mkdir'=>"^[0-9a-zA-Z]{1,10}\$",
 			'upload'=>"^[0-9a-zA-Z]{1,10}\.[0-9a-zA-Z]{1,3}\$"
 		);
+	public $_encode="base64_encode";
+	public $_decode="base64_decode";
 	function myftp($root){
 		$this->root=realpath($root);
 	}
+	public function encode($s){
+		return call_user_func($this->_encode,$s);
+	}
+	public function decode($s){
+		return call_user_func($this->_decode,$s);
+	}
 	function url($type=""){
-		$result="&$this->query_string&myftp_current=".$this->request['myftp_current']."&";
+		$result="&$this->query_string&myftp_current=".$this->encode($this->request['myftp_current'])."&";
 		if($type==='File')$result.="&global_notop=yes&";
 		return $result;
 	}
@@ -65,7 +73,7 @@ class myftp{
 			$mode=$this->mode($stat['mode']);
 			$size=filesize($f);
 			$time=date("Y-m-d H:i:s",filemtime($f));
-			$result.="<tr ondblclick=\"unlink($count)\"><td>$mode</td><td>$size</td><td>$time</td><td><a href=\"?myftp_next=$name".$this->url($type)."\">$name</a></td></tr>\r\n";
+			$result.="<tr ondblclick=\"unlink($count)\"><td>$mode</td><td>$size</td><td>$time</td><td><a href=\"?myftp_next=".$this->encode($name).$this->url($type)."\">$name</a></td></tr>\r\n";
 			$count++;
 		}
 		$dir->close();
@@ -115,6 +123,8 @@ class myftp{
 	}
 	function handleRequest($request){
 		$this->request=$request;
+		$this->request['myftp_current']=$this->decode($this->request['myftp_current']);
+		$this->request['myftp_next']=$this->decode($this->request['myftp_next']);
 		$this->request['myftp_current'].="/".$this->request['myftp_next'];
 		$this->current=realpath($this->root."/".$this->request['myftp_current']);
 		$this->request['myftp_current']=ltrim(substr($this->current,strlen($this->root)),"/");
