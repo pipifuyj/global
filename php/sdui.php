@@ -84,6 +84,7 @@ class sdui extends suid{
 			$row=$this->selectById($id);
 			$legend="Update Item(Id: $id)";
 		}
+		$legend.="<input type=button value=Toggle />";
 		$html="<form id=sduiHtmlReplaceForm action=\"#\" method=\"post\" class=windowForm><fieldset><legend>$legend</legend><ul>";
 		reset($this->replaceColumns);
 		while(list($k,$v)=each($this->replaceColumns)){
@@ -106,7 +107,7 @@ class sdui extends suid{
         return sql::htmlColumnToInput($column,$id,$value);
     }
     public function htmlColumnToLi($column,$label,$id,$value,$row=null){
-        $html="<li";
+        $html="<li data-column={$column['name']}";
         if(in_array($column,$this->hiddenColumns))$html.=" style='display:none;'";
         $html.="><label>$label</label>";
         $html.=$this->htmlColumnToInput($column,$id,$value,$row);
